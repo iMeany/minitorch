@@ -26,14 +26,14 @@ def predictions_dataframe(predictions, sentences):
     ]
 
 
-@st.cache(allow_output_mutation=True)
+@st.cache_data(allow_output_mutation=True)
 def load_glue_dataset():
     print("Loading dataset")
     return load_dataset("glue", "sst2")
 
 
 #  st.subheader("Encode training data as nxk Glove embeddings tensor representations")
-@st.cache(allow_output_mutation=True)
+@st.cache_data(allow_output_mutation=True)
 def load_data(dataset, n_train, n_val):
     print("Loading embeddings... This can take a while the first time.")
     return encode_sentiment_data(
