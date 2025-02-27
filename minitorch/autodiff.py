@@ -34,7 +34,7 @@ def central_difference(f: Any, *vals: Any, arg: int = 0, epsilon: float = 1e-6) 
     f_minus = f(*val_list)
 
     # slope
-    return f_plus - f_minus / (2 * epsilon)
+    return (f_plus - f_minus) / (2 * epsilon)
 
 
 variable_count = 1
@@ -72,8 +72,26 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
     Returns:
         Non-constant Variables in topological order starting from the right.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+
+    # https://en.wikipedia.org/wiki/Topological_sorting
+    order = []
+    seen = set()
+
+    def visit(node: Variable):
+        # skip constant or seen
+        if node.is_constant() or node in seen:
+            return
+        # visit parents for non-leaf nodes
+        if not node.is_leaf():
+            for parent in node.parents:
+                visit(parent)
+        # mark as seen and add to order
+        seen.add(node)
+        order.append(node)
+
+    # start from the right-most variable
+    visit(variable)
+    return order
 
 
 def backpropagate(variable: Variable, deriv: Any) -> None:
@@ -87,8 +105,30 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
 
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
-    # TODO: Implement for Task 1.4.
-    raise NotImplementedError('Need to implement for Task 1.4')
+    # https://minitorch.github.io/module1/backpropagate/#algorithm
+    
+    sorted_nodes = topological_sort(variable)
+    current_derivatives = {variable.unique_id: deriv}
+
+    # iterate in reverse topological order
+    for node in reversed(sorted_nodes):
+        if node.unique_id not in current_derivatives:
+            continue
+
+        # get current derivative
+        current_derivative = current_derivatives[node.unique_id]
+        # get chain rule results
+        chain_rule_results = node.chain_rule(current_derivative)
+
+        # update derivatives for parents
+        for parent, parent_derivative in chain_rule_results:
+            if parent.is_leaf():
+                parent.accumulate_derivative(parent_derivative)
+            else:
+                if parent.unique_id in current_derivatives:
+                    current_derivatives[parent.unique_id] += parent_derivative
+                else:
+                    current_derivatives[parent.unique_id] = parent_derivative
 
 
 @dataclass
