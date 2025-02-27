@@ -31,7 +31,7 @@ class MathTest(Generic[A]):
     @staticmethod
     def subConstant(a: A) -> A:
         "Subtract a constant from the argument"
-        return a - 5
+        return a - 5.0
 
     @staticmethod
     def multConstant(a: A) -> A:
@@ -170,7 +170,7 @@ class MathTestVariable(MathTest):
 
     @staticmethod
     def log(x):
-        return (x + 100000).log()
+        return (x + 100000.0).log()
 
     @staticmethod
     def relu(x):
@@ -178,11 +178,11 @@ class MathTestVariable(MathTest):
 
     @staticmethod
     def exp(a):
-        return (a - 200).exp()
+        return (a - 200.0).exp()
 
     @staticmethod
     def explog(a):
-        return (a + 100000).log() + (a - 200).exp()
+        return (a + 100000.0).log() + (a - 200.0).exp()
 
     @staticmethod
     def sum_red(a):
