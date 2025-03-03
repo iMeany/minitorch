@@ -79,14 +79,14 @@ def topological_sort(variable: Variable) -> Iterable[Variable]:
 
     def visit(node: Variable):
         # skip constant or seen
-        if node.is_constant() or node in seen:
+        if node.is_constant() or node.unique_id in seen:
             return
         # visit parents for non-leaf nodes
         if not node.is_leaf():
             for parent in node.parents:
                 visit(parent)
         # mark as seen and add to order
-        seen.add(node)
+        seen.add(node.unique_id)
         order.append(node)
 
     # start from the right-most variable
@@ -106,7 +106,7 @@ def backpropagate(variable: Variable, deriv: Any) -> None:
     No return. Should write to its results to the derivative values of each leaf through `accumulate_derivative`.
     """
     # https://minitorch.github.io/module1/backpropagate/#algorithm
-    
+
     sorted_nodes = topological_sort(variable)
     current_derivatives = {variable.unique_id: deriv}
 
