@@ -71,7 +71,8 @@ def relu(x: float) -> float:
 
     (See https://en.wikipedia.org/wiki/Rectifier_(neural_networks) .)
     """
-    return max(x, 0.0)
+    # cant use max() because it is not supported by numba
+    return x if x > 0 else 0.0
 
 
 EPS = 1e-6

@@ -44,7 +44,11 @@ def index_to_position(index: Index, strides: Strides) -> int:
     """
 
     # storage[s1 * index1 + s2 * index2 + s3 * index3 ... ]
-    return sum(idx * stride for idx, stride in zip(index, strides))
+    # cant use sum() because it is not supported by numba
+    pos = 0
+    for idx, stride in zip(index, strides):
+        pos += stride * idx
+    return pos
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
