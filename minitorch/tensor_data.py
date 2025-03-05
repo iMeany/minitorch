@@ -44,7 +44,7 @@ def index_to_position(index: Index, strides: Strides) -> int:
     """
 
     # storage[s1 * index1 + s2 * index2 + s3 * index3 ... ]
-    return int(sum(strides * index))
+    return sum(idx * stride for idx, stride in zip(index, strides))
 
 
 def to_index(ordinal: int, shape: Shape, out_index: OutIndex) -> None:
